@@ -1,0 +1,1 @@
+// main.js: dynamic product/category loading
