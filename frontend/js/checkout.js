@@ -1,0 +1,1 @@
+// checkout.js: cart + PayPal integration
