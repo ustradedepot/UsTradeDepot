@@ -1,1 +1,0 @@
--- SQL schema: categories, products, users, orders

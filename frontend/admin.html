@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - UsTradeDepot</title>
+</head>
+<body>
+
+  <div id="dashboard" style="background:#f0f0f0;padding:10px;margin-bottom:20px;">
+    <h2>Dashboard Overview</h2>
+    <p><strong>Total Products:</strong> <span id="total-products">Loading...</span></p>
+  </div>
+
+  <h1>Admin - Product Management</h1>
+
+  <form id="product-form" onsubmit="event.preventDefault(); submitProduct();">
+    <input type="hidden" id="product-id" />
+    
+    <label>Name: <input type="text" id="name" required></label><br>
+    <label>Price: <input type="number" step="0.01" id="price" required></label><br>
+    <label>Description: <input type="text" id="description"></label><br>
+    <label>Quantity: <input type="number" id="quantity" required></label><br>
+    <label>SKU: <input type="text" id="sku"></label><br>
+    <label>Item #: <input type="text" id="item_number"></label><br>
+    <label>Order #: <input type="text" id="order_number"></label><br>
+    <button type="submit">Save Product</button>
+  </form>
+
+  <hr>
+
+  <h2>Current Products</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Name</th><th>Price</th><th>Description</th><th>Quantity</th>
+        <th>SKU</th><th>Item #</th><th>Order #</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="product-list"></tbody>
+  </table>
+
+  <script>
+    function loadDashboard() {
+      fetch('/api/admin/overview')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('total-products').textContent = data.total_products;
+          } else {
+            document.getElementById('total-products').textContent = 'Error';
+          }
+        });
+    }
+
+    function loadProducts() {
+      fetch('/api/admin/products')
+        .then(res => res.json())
+        .then(products => {
+          const tbody = document.getElementById('product-list');
+          tbody.innerHTML = '';
+          products.forEach(product => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${product.name}</td>
+              <td>${product.price}</td>
+              <td>${product.description}</td>
+              <td>${product.quantity}</td>
+              <td>${product.sku}</td>
+              <td>${product.item_number}</td>
+              <td>${product.order_number}</td>
+              <td>
+                <button onclick="editProduct(${product.id})">Edit</button>
+                <button onclick="deleteProduct(${product.id})">Delete</button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        });
+    }
+
+    function editProduct(id) {
+      fetch('/api/admin/products')
+        .then(res => res.json())
+        .then(products => {
+          const product = products.find(p => p.id === id);
+          if (!product) return alert("Product not found");
+
+          document.getElementById('product-id').value = product.id;
+          document.getElementById('name').value = product.name;
+          document.getElementById('price').value = product.price;
+          document.getElementById('description').value = product.description;
+          document.getElementById('quantity').value = product.quantity;
+          document.getElementById('sku').value = product.sku;
+          document.getElementById('item_number').value = product.item_number;
+          document.getElementById('order_number').value = product.order_number;
+        });
+    }
+
+    function submitProduct() {
+      const id = document.getElementById('product-id').value;
+      const product = {
+        name: document.getElementById('name').value,
+        price: parseFloat(document.getElementById('price').value),
+        description: document.getElementById('description').value,
+        quantity: parseInt(document.getElementById('quantity').value),
+        sku: document.getElementById('sku').value,
+        item_number: document.getElementById('item_number').value,
+        order_number: document.getElementById('order_number').value
+      };
+
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `/api/admin/products/${id}` : '/api/admin/products';
+
+      fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(product)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert(id ? "Product updated!" : "Product added!");
+          loadProducts();
+          loadDashboard();
+          document.getElementById('product-form').reset();
+          document.getElementById('product-id').value = '';
+        } else {
+          alert("Error: " + (data.error || data.message));
+        }
+      });
+    }
+
+    function deleteProduct(id) {
+      if (!confirm("Are you sure you want to delete this product?")) return;
+
+      fetch(`/api/admin/products/${id}`, {
+        method: 'DELETE'
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Product deleted.");
+          loadProducts();
+          loadDashboard();
+        } else {
+          alert("Error: " + (data.error || data.message));
+        }
+      });
+    }
+
+    // Initial load
+    loadProducts();
+    loadDashboard();
+  </script>
+</body>
+</html>
+
