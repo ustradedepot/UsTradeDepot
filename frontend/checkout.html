@@ -1,1 +1,180 @@
 <!-- checkout.html: checkout with cart -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Checkout - UsTradeDepot</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="checkout.js" defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 20px;
+      font-size: 22px;
+    }
+    label {
+      display: block;
+      margin: 12px 0 4px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .row {
+      display: flex;
+      gap: 20px;
+    }
+    .row > div {
+      flex: 1;
+    }
+    .checkbox {
+      margin: 10px 0;
+    }
+    .payment-options img {
+      height: 40px;
+      margin: 10px 10px 0 0;
+      cursor: pointer;
+    }
+    button {
+      margin-top: 20px;
+      padding: 14px;
+      width: 100%;
+      background: #004080;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0066cc;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+<h1>Register or Checkout</h1>
+<p style="font-size: 16px; color: #444; margin-top: 8px;">
+Enter your details once to save time on future orders. 
+Whether you're registering for the first time or checking out your cart, 
+this form makes things easier and faster.
+</p>
+<h2>Customer Information</h2>
+    <label for="name">Full Name</label>
+    <input type="text" id="name" placeholder="John Doe" />
+
+    <label for="email">Email Address</label>
+    <input type="email" id="email" placeholder="john@example.com" />
+
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" placeholder="+1 555 123 4567" />
+
+    <h2>Shipping Address</h2>
+    <label>Street Address</label>
+    <input type="text" id="ship-address" placeholder="123 Main St" />
+
+    <div class="row">
+      <div>
+        <label>City</label>
+        <input type="text" id="ship-city" />
+      </div>
+      <div>
+        <label>State</label>
+        <input type="text" id="ship-state" />
+      </div>
+      <div>
+        <label>Zip</label>
+        <input type="text" id="ship-zip" />
+      </div>
+    </div>
+
+    <label>Country</label>
+    <input type="text" id="ship-country" />
+
+    <div class="checkbox">
+      <input type="checkbox" id="same-as-shipping" checked />
+      <label for="same-as-shipping">Billing address is same as shipping</label>
+    </div>
+
+    <div id="billing-section" style="display: none;">
+      <h2>Billing Address</h2>
+      <label>Street Address</label>
+      <input type="text" id="bill-address" />
+
+      <div class="row">
+        <div>
+          <label>City</label>
+          <input type="text" id="bill-city" />
+        </div>
+        <div>
+          <label>State</label>
+          <input type="text" id="bill-state" />
+        </div>
+        <div>
+          <label>Zip</label>
+          <input type="text" id="bill-zip" />
+        </div>
+      </div>
+
+      <label>Country</label>
+      <input type="text" id="bill-country" />
+    </div>
+
+    <h2>2FA Verification</h2>
+    <label>Enter the 6-digit code sent via SMS</label>
+    <input type="text" id="sms-code" maxlength="6" placeholder="------" />
+
+    <h2>Payment Method</h2>
+    <label>Card Number</label>
+    <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX" />
+
+    <div class="row">
+      <div>
+        <label>Expiration</label>
+        <input type="text" id="card-exp" placeholder="MM/YY" />
+      </div>
+      <div>
+        <label>CVV</label>
+        <input type="number" id="card-cvv" />
+      </div>
+    </div>
+
+    <div class="payment-options">
+      <p>Or choose a method:</p>
+      <img src="images/paypal.png" alt="PayPal" />
+      <img src="images/applepay.png" alt="Apple Pay" />
+      <img src="images/googlepay.png" alt="Google Pay" />
+    </div>
+
+    <div class="checkbox">
+      <input type="checkbox" id="terms" />
+      <label for="terms">I agree to the terms and conditions</label>
+    </div>
+
+    <button type="submit">Place Order</button>
+  </div>
+
+  <script>
+    document.getElementById('same-as-shipping').addEventListener('change', (e) => {
+      document.getElementById('billing-section').style.display = e.target.checked ? 'none' : 'block';
+    });
+  </script>
+</body>
+</html>
